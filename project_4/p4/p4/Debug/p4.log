@@ -1,0 +1,6 @@
+﻿  Entity.cpp
+C:\Users\Oliver_Wu\Desktop\NYU\2020 Summer\CS3113\project_4\p4\p4\Entity.cpp(222,23): warning C4018: '<': signed/unsigned mismatch
+  main.cpp
+  ShaderProgram.cpp
+  Generating Code...
+  p4.vcxproj -> C:\Users\Oliver_Wu\Desktop\NYU\2020 Summer\CS3113\project_4\p4\Debug\p4.exe
