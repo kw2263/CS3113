@@ -24,6 +24,7 @@ void Level1::Initialize() {
     state.map = new Map(LEVEL1_WIDTH, LEVEL1_HEIGHT, level1_data, mapTextureID, 1.0f, 4, 1);
 
     // Move over all of the player and enemy code from initialization.
+
     state.player = new Entity();
     state.player->entityType = PLAYER;
     state.player->position = glm::vec3(5, 0, 0);

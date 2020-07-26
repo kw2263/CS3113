@@ -12,6 +12,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
 #include "Map.h"
+#include "Util.h"
 
 enum EntityType { PLAYER, PLATFORM, ENEMY };
 
@@ -43,6 +44,7 @@ public:
 
     std::string msg;
     bool isFont = false;
+    glm::vec3 fontPosition;
 
     int* animRight = NULL;
     int* animLeft = NULL;
@@ -74,11 +76,9 @@ public:
     void Update(float deltaTime, Entity* player, Entity* objects, int objectCount, Map* map);
     void Render(ShaderProgram* program);
     void DrawSpriteFromTextureAtlas(ShaderProgram* program, GLuint textureID, int index);
-    void DrawText(ShaderProgram* program, GLuint fontTextureID, std::string text,
-        float size, float spacing, glm::vec3 position);
 
     void AI(Entity* player, Entity* platforms, int platformCount);
     void AIJumper(Entity* objects, int objectCount);
     void AIWaitAndGo(Entity* player);
     void AIPatroller(Entity* objects, int objectCount);
-}; 
+};

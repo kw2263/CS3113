@@ -1,14 +1,8 @@
 ﻿  Entity.cpp
-C:\Users\Oliver_Wu\Desktop\NYU\2020 Summer\CS3113\project_5\project_5\Entity.cpp(276,23): warning C4018: '<': signed/unsigned mismatch
   Level1.cpp
   Level2.cpp
-  main.cpp
-  Map.cpp
-C:\Users\Oliver_Wu\Desktop\NYU\2020 Summer\CS3113\project_5\project_5\Map.cpp(86,13): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\Oliver_Wu\Desktop\NYU\2020 Summer\CS3113\project_5\project_5\Map.cpp(87,13): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  Menu.cpp
   Scene.cpp
-  ShaderProgram.cpp
-  Util.cpp
-C:\Users\Oliver_Wu\Desktop\NYU\2020 Summer\CS3113\project_5\project_5\Util.cpp(30,20): warning C4018: '<': signed/unsigned mismatch
+  main.cpp
   Generating Code...
   project_5.vcxproj -> C:\Users\Oliver_Wu\Desktop\NYU\2020 Summer\CS3113\project_5\Debug\project_5.exe

@@ -15,6 +15,7 @@
 #include "Entity.h"
 #include "Map.h"
 #include "Scene.h"
+#include "Menu.h"
 #include "Level1.h"
 #include "Level2.h"
 
@@ -25,7 +26,7 @@ ShaderProgram program;
 glm::mat4 viewMatrix, modelMatrix, projectionMatrix;
 
 Scene* currentScene;
-Scene* sceneList[2];
+Scene* sceneList[3];
 
 void SwitchToScene(Scene* scene) {
     currentScene = scene;
@@ -60,14 +61,17 @@ void Initialize() {
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    sceneList[0] = new Level1();
-    sceneList[1] = new Level2();
+    sceneList[0] = new Menu();
+    sceneList[1] = new Level1();
+    sceneList[2] = new Level2();
     SwitchToScene(sceneList[0]);
 }
 
 void ProcessInput() {
 
-    currentScene->state.player->movement = glm::vec3(0);
+    if (currentScene != sceneList[0]) {
+        currentScene->state.player->movement = glm::vec3(0);
+    }
 
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -79,19 +83,18 @@ void ProcessInput() {
 
         case SDL_KEYDOWN:
             switch (event.key.keysym.sym) {
-            case SDLK_LEFT:
-                // Move the player left
-                break;
-
-            case SDLK_RIGHT:
-                // Move the player right
-                break;
-
             case SDLK_SPACE:
-                if (currentScene->state.player->collidedBottom) {
-                    currentScene->state.player->jump = true;
+                if (currentScene != sceneList[0]) {
+                    if (currentScene->state.player->collidedBottom) {
+                        currentScene->state.player->jump = true;
+                    }
                 }
                 break;
+
+            case SDLK_RETURN:
+                if (currentScene == sceneList[0]) {
+                    currentScene->state.nextScene = 1;
+                }
             }
             break; // SDL_KEYDOWN
         }
@@ -99,20 +102,22 @@ void ProcessInput() {
 
     const Uint8* keys = SDL_GetKeyboardState(NULL);
 
-    if (keys[SDL_SCANCODE_LEFT]) {
-        currentScene->state.player->movement.x = -1.0f;
-        currentScene->state.player->animIndices = currentScene->state.player->animLeft;
-    }
-    else if (keys[SDL_SCANCODE_RIGHT]) {
-        currentScene->state.player->movement.x = 1.0f;
-        currentScene->state.player->animIndices = currentScene->state.player->animRight;
-    }
+    if (currentScene != sceneList[0]) {
 
+        if (keys[SDL_SCANCODE_LEFT]) {
+            currentScene->state.player->movement.x = -1.0f;
+            currentScene->state.player->animIndices = currentScene->state.player->animLeft;
+        }
+        else if (keys[SDL_SCANCODE_RIGHT]) {
+            currentScene->state.player->movement.x = 1.0f;
+            currentScene->state.player->animIndices = currentScene->state.player->animRight;
+        }
 
-    if (glm::length(currentScene->state.player->movement) > 1.0f) {
-        currentScene->state.player->movement = glm::normalize(currentScene->state.player->movement);
+        if (glm::length(currentScene->state.player->movement) > 1.0f) {
+            currentScene->state.player->movement = glm::normalize(currentScene->state.player->movement);
+        }
+
     }
-
 }
 
 #define FIXED_TIMESTEP 0.0166666f
@@ -124,27 +129,31 @@ void Update() {
     float deltaTime = ticks - lastTicks;
     lastTicks = ticks;
 
-    deltaTime += accumulator;
-    if (deltaTime < FIXED_TIMESTEP) {
+    if (currentScene != sceneList[0]) {
+
+        deltaTime += accumulator;
+        if (deltaTime < FIXED_TIMESTEP) {
+            accumulator = deltaTime;
+            return;
+        }
+
+        while (deltaTime >= FIXED_TIMESTEP) {
+            currentScene->Update(FIXED_TIMESTEP);
+
+            deltaTime -= FIXED_TIMESTEP;
+        }
+
         accumulator = deltaTime;
-        return;
+
+        viewMatrix = glm::mat4(1.0f);
+        if (currentScene->state.player->position.x > 5) {
+            viewMatrix = glm::translate(viewMatrix, glm::vec3(-currentScene->state.player->position.x, 3.75, 0));
+        }
+        else {
+            viewMatrix = glm::translate(viewMatrix, glm::vec3(-5, 3.75, 0));
+        }
     }
 
-    while (deltaTime >= FIXED_TIMESTEP) {
-        currentScene->Update(FIXED_TIMESTEP);
-
-        deltaTime -= FIXED_TIMESTEP;
-    }
-
-    accumulator = deltaTime;
-
-    viewMatrix = glm::mat4(1.0f);
-    if (currentScene->state.player->position.x > 5) {
-        viewMatrix = glm::translate(viewMatrix, glm::vec3(-currentScene->state.player->position.x, 3.75, 0));
-    }
-    else {
-        viewMatrix = glm::translate(viewMatrix, glm::vec3(-5, 3.75, 0));
-    }
 }
 
 void Render() {
