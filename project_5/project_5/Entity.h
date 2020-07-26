@@ -16,8 +16,8 @@
 
 enum EntityType { PLAYER, PLATFORM, ENEMY };
 
-enum AIType { WAITANDGO, JUMPER, PATROLLER };
-enum AIState { IDLE, WALKING, JUMPING, PATROLLING };
+enum AIType { JUMPER };
+enum AIState { JUMPING };
 
 class Entity {
 public:
@@ -45,6 +45,9 @@ public:
     std::string msg;
     bool isFont = false;
     glm::vec3 fontPosition;
+    float fontSize;
+
+    int lives;
 
     int* animRight = NULL;
     int* animLeft = NULL;
@@ -77,8 +80,6 @@ public:
     void Render(ShaderProgram* program);
     void DrawSpriteFromTextureAtlas(ShaderProgram* program, GLuint textureID, int index);
 
-    void AI(Entity* player, Entity* platforms, int platformCount);
-    void AIJumper(Entity* objects, int objectCount);
-    void AIWaitAndGo(Entity* player);
-    void AIPatroller(Entity* objects, int objectCount);
+    void AI(Entity* player, Map* map);
+    void AIJumper(Map* map);
 };

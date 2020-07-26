@@ -2,7 +2,7 @@
 
 #define TEXT_COUNT 2
 
-void Menu::Initialize() {
+void Menu::Initialize(int lives) {
 
     state.nextScene = -1;
 
@@ -12,12 +12,14 @@ void Menu::Initialize() {
     state.texts[0].textureID = fontTextureID;
     state.texts[0].msg = "3 Level Game";
     state.texts[0].isFont = true;
-    state.texts[0].fontPosition = glm::vec3(-2.75f, 1, 0);
+    state.texts[0].fontPosition = glm::vec3(-4.4f, 1, 0);
+    state.texts[0].fontSize = 0.8f;
 
     state.texts[1].textureID = fontTextureID;
     state.texts[1].msg = "press Enter to start";
     state.texts[1].isFont = true;
-    state.texts[1].fontPosition = glm::vec3(-4.75f, -1, 0);
+    state.texts[1].fontPosition = glm::vec3(-3.0f, -1, 0);
+    state.texts[1].fontSize = 0.3f;
 
 }
 

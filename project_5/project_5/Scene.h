@@ -22,10 +22,11 @@ struct GameState {
 	int nextScene;
 	Entity* texts;
 };
+
 class Scene {
 public:
 	GameState state;
-	virtual void Initialize() = 0;
+	virtual void Initialize(int lives) = 0;
 	virtual void Update(float deltaTime) = 0;
 	virtual void Render(ShaderProgram* program) = 0;
 };

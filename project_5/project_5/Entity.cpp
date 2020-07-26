@@ -139,55 +139,19 @@ void Entity::CheckCollisionsX(Map* map)
     }
 }
 
-void Entity::AIPatroller(Entity* objects, int objectCount) {
-    CheckCollisionsX(objects, objectCount);
-    if (collidedLeft) {
-        movement = glm::vec3(1, 0, 0);
-    }
-    else if (collidedRight) {
-        movement = glm::vec3(-1, 0, 0);
-    }
-}
-
-void Entity::AIJumper(Entity* objects, int objectCount) {
-    CheckCollisionsY(objects, objectCount);
+void Entity::AIJumper(Map* map) {
+    CheckCollisionsY(map);
     if (collidedBottom) {
         jump = true;
     }
 }
 
-void Entity::AIWaitAndGo(Entity* player) {
-    switch (aiState) {
-    case IDLE:
-        if (glm::distance(position, player->position) < 3.0f) {
-            aiState = WALKING;
-        }
-        break;
-
-    case WALKING:
-        if (player->position.x < position.x) {
-            movement = glm::vec3(-1, 0, 0);
-        }
-        else {
-            movement = glm::vec3(1, 0, 0);
-        }
-        break;
-    }
-}
-
-void Entity::AI(Entity* player, Entity* platforms, int platformCount) {
+void Entity::AI(Entity* player, Map* map) {
     switch (aiType) {
     case JUMPER:
-        AIJumper(platforms, platformCount);
+        AIJumper(map);
         break;
 
-    case WAITANDGO:
-        AIWaitAndGo(player);
-        break;
-
-    case PATROLLER:
-        AIPatroller(platforms, platformCount);
-        break;
     }
 }
 
@@ -219,11 +183,6 @@ void Entity::Update(float deltaTime, Entity* player, Entity* objects, int object
         }
     }
 
-    if (jump) {
-        jump = false;
-        velocity.y += jumpPower;
-    }
-
     velocity.x = movement.x * speed;
     velocity += acceleration * deltaTime;
 
@@ -234,6 +193,20 @@ void Entity::Update(float deltaTime, Entity* player, Entity* objects, int object
     position.x += velocity.x * deltaTime; // Move on X
     CheckCollisionsX(map);
     CheckCollisionsX(objects, objectCount); // Fix if needed
+
+    if (entityType == ENEMY) {
+        AI(player, map);
+    }
+
+    if (jump) {
+        jump = false;
+        velocity.y += jumpPower;
+    }
+
+    if (entityType == PLAYER) {
+        CheckCollisionsX(objects, objectCount);
+        CheckCollisionsY(objects, objectCount);
+    }
 
     modelMatrix = glm::mat4(1.0f);
     modelMatrix = glm::translate(modelMatrix, position);
@@ -278,7 +251,7 @@ void Entity::Render(ShaderProgram* program) {
     }
 
     if (isFont) {
-        Util::DrawText(program, textureID, msg, 0.5f, 0, fontPosition);
+        Util::DrawText(program, textureID, msg, fontSize, 0, fontPosition);
         return;
     }
 
